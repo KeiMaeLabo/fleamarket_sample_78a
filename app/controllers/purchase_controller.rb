@@ -16,16 +16,15 @@ class PurchaseController < ApplicationController
   end
 
   def pay
-    item = Item.find(params[:item_id])
     Payjp.api_key = ENV['PAYJP_PRIVATE_KEY']
     Payjp::Charge.create(
-    amount: item.price, #支払金額を入力
+    amount: @item.price, #支払金額を入力
     customer: @card.customer_id, #顧客ID
     currency: 'jpy', #日本円
     )
-    item.sell_or_sold = "Sold"
-    item.buyer_id = current_user.id
-    item.save
+    @item.sell_or_sold = "Sold"
+    @item.buyer_id = current_user.id
+    @item.save
     redirect_to action: 'done'
   end
 
